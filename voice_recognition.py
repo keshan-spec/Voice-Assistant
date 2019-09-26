@@ -6,24 +6,34 @@ from gtts import gTTS
 from playsound import playsound
 from scipy.io.wavfile import write
 
-
+mic = sr.Microphone()
 r = sr.Recognizer()  # obtain source from the microphone
 audio_path = 'audio/output.wav'
-commands = ['open chrome', 'stop', 'whats the time', 'chrome', 'google']
+commands = ['open chrome', 'stop',
+            'whats the time', 'chrome', 'google', 'hello']
+
+
+def speak(text):
+    filename = "speak/audio.mp3"
+    tts = gTTS(text)
+    tts.save(filename)
+    playsound(filename)
 
 
 def user_command(inp):
     for command in commands:
         if inp.lower() == command:
-            if inp.lower() == 'stop':
-                print('[-] Okay bye')
+            if inp.lower() == 'hello':
+                speak('Okay bye')
             else:
                 print(command)
-                time.sleep(2)
-                record()
+                audio = listen()
+                speech_to_text(audio)
         else:
+            print("[-] NO command")
             time.sleep(2)
-            record()
+            audio = listen()
+            speech_to_text(audio)
 
 
 def speech_to_text(audio):
@@ -37,27 +47,27 @@ def speech_to_text(audio):
     except sr.UnknownValueError:
         print("[-] Sorry, could not understand audio")
         time.sleep(2)
-        record()
+        audio = listen()
+        speech_to_text(audio)
     except sr.RequestError as e:
         print(
             "[-] Could not request results from Google Speech Recognition service; {0}".format(e))
         time.sleep(2)
-        record()
+        audio = listen()
+        speech_to_text(audio)
+    except KeyboardInterrupt:
+        print("[-] You stopped the program")
 
-
-def speak(text):
-    filename = "speak/audio.mp3"
-    tts = gTTS(text)
-    tts.save(filename)
-    playsound(filename)
-
-
-def listen(src):
-    with src as source:
+# listens for audio from the mic
+# Speech recognition module
+def listen():
+    with mic as source:
+        print("Listening...")
         r.adjust_for_ambient_noise(source)
-        return r.record(source)
+        return r.listen(source)
 
-
+# records the audio and saves it to a .wav file 
+# sounddevice module
 def record():
     fs = 44100  # Sample rate
     seconds = 3  # Duration of recording
@@ -72,10 +82,11 @@ def record():
         sf.write(audio_path, data, fs)
 
         src = sr.AudioFile(audio_path)  # obtain source from the audio
-        audio = listen(src)
+        audio = listen()
         speech_to_text(audio)
     except KeyboardInterrupt:
         print('[-] You stopped the program')
 
 
-record()
+audio = listen()
+speech_to_text(audio)
