@@ -18,19 +18,19 @@ class SpeechRecognition():
             # for testing purposes, we're just using the default API key
             # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
             # instead of `r.recognize_google(audio)`
-            print("[+] You said : " + self.r.recognize_google(audio))
-            self.listen()
+            reg = self.r.recognize_google(audio)
+            print(f"[+] You said : {reg}")
+            return reg
         except sr.UnknownValueError:
             print("[-] Sorry, could not understand audio")
-            time.sleep(1)
-            self.listen()
+            return 0            
         except sr.RequestError as e:
             print(
                 "[-] Could not request results from Google Speech Recognition service; {0}".format(e))
-            time.sleep(1)
-            self.listen()
+            return -1
         except KeyboardInterrupt:
             print("[-] You stopped the program")
+            return
 
     # listens for audio from the mic
     # Speech recognition module
@@ -44,24 +44,27 @@ class SpeechRecognition():
         except KeyboardInterrupt:
             print('[-] You stopped the program')
             return
-        except AssertionError:
-            print('[-] Error')
+        except Exception as e:
+            print(f'[-] Error {e}')
 
     # records the audio and saves it to a .wav file
     # sound device module
     def record(self):
         fs = 44100  # Sample rate
-        seconds = 3  # Duration of recording
+        seconds = 5  # Duration of recording
         audio_path = 'output.wav'  # audio path to save
         try:
-            print("Listening: ")
+            print("Listening..")
             myrecording = sd.rec(int(seconds * fs), samplerate=fs, channels=2)
             sd.wait()  # Wait until recording is finished
             write(audio_path, fs, myrecording)  # Save as WAV file
             data, fs = sf.read(audio_path)  # Extract audio data and sampling rate from file
             sf.write(audio_path, data, fs)  # Save as FLAC file at correct sampling rate
-            src = sr.AudioFile(audio_path)  # obtain source from the audio
-            self.speech_to_text(src)
+            
+            # obtain source from the audio
+            with sr.AudioFile(audio_path) as source:
+                audio_text = self.r.listen(source)
+            self.speech_to_text(audio_text)
         except KeyboardInterrupt:
             print('[-] You stopped the program')
             return
@@ -73,7 +76,8 @@ class SpeechRecognition():
         tts.save(filename)
         playsound(filename)
 
-
-# speech class obj
-speech = SpeechRecognition()
-speech.listen()
+if __name__ == "__main__":
+    # speech class obj
+    speech = SpeechRecognition()
+    speech.record()
+  
