@@ -1,0 +1,7 @@
+soundfile
+sounddevice
+gtts
+playsound
+scipy
+PyAudio
+speech_recognition
