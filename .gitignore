@@ -2,3 +2,4 @@
 *.wav
 .vscode
 __pycache__
+classes/__pycache__
