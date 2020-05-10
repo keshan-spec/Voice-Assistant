@@ -2,7 +2,7 @@ from classes.SpeechRecognition import SpeechRecognition
 from classes.Translator import Translate
 
 tr = Translate()
-
+recognition = SpeechRecognition()
 
 def user_command(inp):
     commands = ['open', 'stop', 'chrome', 'google', 'translate', 'set', 'language']
@@ -13,10 +13,11 @@ def user_command(inp):
             print(f"Setting language {tr.LANGUAGES[s[1]]}")
             tr.set_defaults(tr.LANGUAGES[s[1]])
         if s[0] == 'translate':
-            print(tr.translate(inp))
+            translated = tr.translate(inp)
+            print(translated)
+            recognition.speak(translated['pronouciation'])
 
 
-recognition = SpeechRecognition()
 command = -1
 while command:
     command = recognition.listen()

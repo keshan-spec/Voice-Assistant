@@ -71,10 +71,11 @@ class SpeechRecognition():
 
     @staticmethod
     def speak(text):
-        filename = "speak/audio.mp3"
+        filename = "classes/speak.mp3"
         tts = gTTS(text)
         tts.save(filename)
         playsound(filename)
+
 
 if __name__ == "__main__":
     # speech class obj
