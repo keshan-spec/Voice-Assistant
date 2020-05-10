@@ -23,11 +23,11 @@ class SpeechRecognition():
             return reg
         except sr.UnknownValueError:
             print("[-] Sorry, could not understand audio")
-            return 0            
+            return
         except sr.RequestError as e:
             print(
                 "[-] Could not request results from Google Speech Recognition service; {0}".format(e))
-            return -1
+            return
         except KeyboardInterrupt:
             print("[-] You stopped the program")
             return
@@ -40,7 +40,7 @@ class SpeechRecognition():
                 print("Listening...")
                 self.r.adjust_for_ambient_noise(source)
                 src = self.r.listen(source)
-            self.speech_to_text(src)
+            return self.speech_to_text(src)
         except KeyboardInterrupt:
             print('[-] You stopped the program')
             return
