@@ -1,5 +1,5 @@
-from SpeechRecognition import SpeechRecognition
-from Translator import Translate
+from classes.SpeechRecognition import SpeechRecognition
+from classes.Translator import Translate
 
 tr = Translate()
 
