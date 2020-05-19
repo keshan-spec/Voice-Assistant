@@ -4,6 +4,7 @@ from classes.Translator import Translate
 tr = Translate()
 recognition = SpeechRecognition()
 
+
 def user_command(inp):
     commands = ['open', 'stop', 'chrome', 'google', 'translate', 'set', 'language']
     s = inp.lower().split(" ")
@@ -15,11 +16,12 @@ def user_command(inp):
         if s[0] == 'translate':
             translated = tr.translate(inp)
             print(translated)
-            recognition.speak(translated['pronouciation'])
+            recognition.speak(translated['text'])
 
 
-command = -1
-while command:
+while True:
     command = recognition.listen()
     if command:
         user_command(command)
+    if command == 'quit':
+        break

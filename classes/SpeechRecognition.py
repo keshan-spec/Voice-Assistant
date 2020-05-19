@@ -5,7 +5,7 @@ import speech_recognition as sr
 from gtts import gTTS
 from playsound import playsound
 from scipy.io.wavfile import write
-
+import pyttsx3
 
 class SpeechRecognition():
     def __init__(self):
@@ -71,10 +71,9 @@ class SpeechRecognition():
 
     @staticmethod
     def speak(text):
-        filename = "classes/speak.mp3"
-        tts = gTTS(text)
-        tts.save(filename)
-        playsound(filename)
+        engine = pyttsx3.init()
+        engine.say(text)
+        engine.runAndWait()
 
 
 if __name__ == "__main__":
